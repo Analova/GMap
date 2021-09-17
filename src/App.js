@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CssBaseline, Grid } from "@material-ui/core";
 
-import { getPalcesData, getPlacesData } from "./api"
+import { getPalcesData, getPlacesData, getWeatherData } from "./api"
 import Header from "./components/Header/Header"
 import List from "./components/List/List"
 import Map from "./components/Map/Map"
@@ -9,6 +9,7 @@ import { FlashOnOutlined } from "@material-ui/icons";
 
 function App() {
   const [places, setPlaces] = useState([]);
+  const [weather, setWeatherData] = useState([]);
   const [filteredPlaces, setFilteredPlaces] = useState([]);
   const [childClicked, setChildClicked] = useState(null)
   const [coordinates, setCoordinates] = useState({})
@@ -33,6 +34,9 @@ function App() {
   useEffect(() => {
     if (bounds.sw && bounds.ne) {
       setIsLoading(true)
+
+      getWeatherData(coordinates.lat, coordinates.lng)
+        .then((data) => setWeatherData(data))
 
       getPlacesData(type, bounds.sw, bounds.ne)
         .then((data) => {
@@ -65,6 +69,7 @@ function App() {
             coordinates={coordinates}
             places={filteredPlaces.length ? filteredPlaces : places}
             setChildClicked={setChildClicked}
+            getWeatherData={weatherData}
           />
         </Grid>
       </Grid>
